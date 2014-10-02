@@ -3,7 +3,6 @@ require 'fakefs/spec_helpers'
 
 describe RumourMill do 
   
-
   describe '#new_files_to_process?' do
     include FakeFS::SpecHelpers::All
 

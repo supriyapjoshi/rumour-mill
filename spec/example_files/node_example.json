@@ -1,0 +1,17 @@
+[
+  {
+    "name":"node_1"
+  },
+  {
+    "name":"node_2",
+    "detail_1":"property1",
+    "property_2":"property2",
+    "something":"propertyn"
+  },
+  {
+    "name":"node_n",
+    "detail_1":"property1",
+    "something":"property2",
+    "foo":"propertyn"
+  }
+]

@@ -1,0 +1,21 @@
+[
+  {
+   "to_name":"node_1",
+   "from_name":"node_2",
+   "relationship_name":"relationship"
+  },
+  {
+   "to_name":"node_3",
+   "from_name":"node_2",
+   "relationship_name":"relationship_name",
+   "property_1": "property_1",
+   "property_n": "property_n"
+  },
+  {
+   "to_name":"node_2",
+   "from_name":"node_n",
+   "relationship_name":"relationship_name",
+   "property_1": "property_1",
+   "property_n": "property_n"
+  }
+]
