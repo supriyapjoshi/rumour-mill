@@ -62,7 +62,7 @@ describe RumourMill do
     it 'inserts all the nodes into the database' do
 
       expect(subject.insert_nodes(node_file_data)).to be_truthy
-
+      
     end
 
   end
