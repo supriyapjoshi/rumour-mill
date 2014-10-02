@@ -1,19 +1,7 @@
-# encoding: utf-8
+require 'rspec/core/rake_task'
 
-require 'rubygems'
-require 'bundler'
-begin
-  Bundler.setup(:default, :development)
-rescue Bundler::BundlerError => e
-  $stderr.puts e.message
-  $stderr.puts "Run `bundle install` to install missing gems"
-  exit e.status_code
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.rspec_opts = '--format documentation'
 end
-require 'rake'
-
-$LOAD_PATH << File.expand_path('lib', File.dirname(__FILE__))
-require File.join(File.dirname(__FILE__), 'config/boot')
-
-FileList['./lib/tasks/**/*.rake'].each { |task| load task }
 
 task :default => :spec
