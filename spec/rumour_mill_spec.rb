@@ -30,7 +30,7 @@ describe RumourMill do
     context 'when there are no new files to process' do
       
       before do
-        FakeFS::FileSystem.clearadd 
+        FakeFS::FileSystem.clear
         FileUtils.mkdir_p 'rumours/new'
       end
 
