@@ -8,7 +8,6 @@ describe RumourMill do
     include FakeFS::SpecHelpers::All
 
     def create_test_file path, data
-      FakeFS::FileSystem.clear
       FileUtils.mkdir_p File.dirname(path)
       File.open(path, "wb") do |file|
           data.each { |row| file << row }
@@ -18,10 +17,11 @@ describe RumourMill do
     context 'when there are new files to process' do
       
       before do
+        FakeFS::FileSystem.clear
         create_test_file 'rumours/new/data.json', ['blah']
       end
 
-      it '#new_files_to_process? returns true' do
+      it 'returns true' do
         expect(subject.new_files_to_process?).to be_truthy
       end
 

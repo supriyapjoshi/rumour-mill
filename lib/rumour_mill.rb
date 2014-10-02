@@ -7,4 +7,6 @@ class RumourMill
     !Dir.glob(@process_file_location + '/*.json').empty?
   end
 
+  
+
 end
