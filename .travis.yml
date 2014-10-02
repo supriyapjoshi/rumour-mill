@@ -1,8 +1,6 @@
 language: ruby
 rvm:
   - "2.1.2"
-services:
-  - neo4j
 env:
   - NEO_VERSION="2.1.4"
 
