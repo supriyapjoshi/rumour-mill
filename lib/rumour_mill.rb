@@ -12,7 +12,7 @@ class RumourMill
   def insert_nodes nodes_json_data
     @db_host = 'http://localhost:7474'
     nodes_hash = JSON.parse nodes_json_data
-    @session = Neo4j::Session.open(:server_db,@db_host)
+    @session = Neo4j::Session.open(:server_db, @db_host)
 
     nodes_hash.each do |node|
       Neo4j::Node.create(node, :node)

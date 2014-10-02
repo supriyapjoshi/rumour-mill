@@ -1,5 +1,11 @@
 require 'spec_helper'
 require 'fakefs/spec_helpers'
+require 'neo4j'
+
+class OurNode
+  include Neo4j::ActiveNode
+  property :name
+end
 
 describe RumourMill do 
   
@@ -43,6 +49,10 @@ describe RumourMill do
 
   describe '#insert_nodes' do
 
+    before do
+      @session = Neo4j::Session.open(:server_db, 'http://localhost:7474')
+    end
+
     let(:node_file_data) { '[{
                                 "name":"node_1"
                               },
@@ -60,9 +70,14 @@ describe RumourMill do
                               }]'}
 
     it 'inserts all the nodes into the database' do
+      subject.insert_nodes(node_file_data)
+      result = @session.query("MATCH (n:node) WHERE n.name='node_2' RETURN n")
+      expect(result.to_a.size).to eq(1)
 
-      expect(subject.insert_nodes(node_file_data)).to be_truthy
-      
+    end
+
+    after do
+      @session.query('MATCH (n) DELETE n')
     end
 
   end
