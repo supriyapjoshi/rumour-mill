@@ -1,7 +1,7 @@
 class RumourMill
 
-  def do_something
-    'hihi'
+  def has_new_files?
+    true
   end
 
 end
