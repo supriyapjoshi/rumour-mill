@@ -41,4 +41,30 @@ describe RumourMill do
 
   end
 
+  describe '#insert_nodes' do
+
+    let(:node_file_data) { '[{
+                                "name":"node_1"
+                              },
+                              {
+                                "name":"node_2",
+                                "detail_1":"property1",
+                                "property_2":"property2",
+                                "something":"propertyn"
+                              },
+                              {
+                                "name":"node_n",
+                                "detail_1":"property1",
+                                "something":"property2",
+                                "foo":"propertyn"
+                              }]'}
+
+    it 'inserts all the nodes into the database' do
+
+      expect(subject.insert_nodes(node_file_data)).to be_truthy
+
+    end
+
+  end
+
 end

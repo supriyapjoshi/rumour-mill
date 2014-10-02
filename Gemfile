@@ -8,3 +8,4 @@ group :development, :test do
 end
 
 gem 'rake'
+gem 'neo4j'
