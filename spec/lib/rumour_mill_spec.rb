@@ -70,9 +70,14 @@ describe RumourMill do
                               }]'}
 
     it 'inserts all the nodes into the database' do
+      
       subject.insert_nodes(node_file_data)
-      result = @session.query("MATCH (n:node) WHERE n.name='node_2' RETURN n")
-      expect(result.to_a.size).to eq(1)
+      node_1 = @session.query("MATCH (n:node) WHERE n.name='node_1' RETURN n")
+      node_2 = @session.query("MATCH (n:node) WHERE n.name='node_2' RETURN n")
+      node_n = @session.query("MATCH (n:node) WHERE n.name='node_n' RETURN n")
+      expect(node_1.to_a.size).to eq(1)
+      expect(node_2.to_a.size).to eq(1)
+      expect(node_n.to_a.size).to eq(1)
 
     end
 
