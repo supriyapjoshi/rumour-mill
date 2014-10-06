@@ -97,8 +97,61 @@ describe RumourMill do
   end
 
   describe '#insert_relationships' do
-    
+    let(:relationships_data){'[{
+                                 "from":"node_1",
+                                 "to":"node_2",
+                                 "relationship":"relationship"
+                                },
+                                {
+                                 "from":"node_1",
+                                 "to":"node_n",
+                                 "relationship":"relationship_name",
+                                 "property-1": "property_1",
+                                 "property-n": "property_n"
+                                },
+                                {
+                                 "from":"node_2",
+                                 "to":"node_n",
+                                 "relationship":"relationship_name",
+                                 "property-1": "property_1",
+                                 "property-n": "property_n"
+                                }]'}
+    before do
 
+    end
+
+    xit 'inserts all the correct relationship connections' do
+
+    end
+
+    xit 'will not insert relationships without relationship property' do
+
+    end
+
+
+    xit 'will not insert relationships without to property' do
+
+    end
+
+    xit 'will not insert relationships without from property' do
+
+    end
+
+    xit 'will not insert relationships when the to node does not exist' do
+
+    end
+
+    xit 'will not insert relationships when the from node does not exist' do
+
+    end
+    
+    xit 'attaches any other properties to that relationship that are given' do
+
+    end
+
+    after do
+
+    end
   end
 
   after do

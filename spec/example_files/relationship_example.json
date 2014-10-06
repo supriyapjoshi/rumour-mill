@@ -1,20 +1,20 @@
 [
   {
-   "to-name":"node_1",
-   "from-name":"node_2",
-   "relationship-name":"relationship"
+   "from":"node_1",
+   "to":"node_2",
+   "relationship":"relationship"
   },
   {
-   "to-name":"node_3",
-   "from-name":"node_2",
-   "relationship-name":"relationship_name",
+   "from":"node_3",
+   "to":"node_2",
+   "relationship":"relationship_name",
    "property-1": "property_1",
    "property-n": "property_n"
   },
   {
-   "to-name":"node_2",
-   "from-name":"node_n",
-   "relationship-name":"relationship_name",
+   "from":"node_2",
+   "to":"node_n",
+   "relationship":"relationship_name",
    "property-1": "property_1",
    "property-n": "property_n"
   }
