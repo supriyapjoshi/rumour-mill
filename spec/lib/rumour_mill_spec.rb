@@ -2,14 +2,10 @@ require 'spec_helper'
 require 'fakefs/spec_helpers'
 require 'neo4j'
 
-class OurNode
-  include Neo4j::ActiveNode
-  property :name
-end
-
 describe RumourMill do 
   
   describe '#new_files_to_process?' do
+    
     include FakeFS::SpecHelpers::All
 
     def create_test_file path, data
@@ -47,17 +43,19 @@ describe RumourMill do
 
   end
 
+  before do
+    @session = Neo4j::Session.open(:server_db, 'http://localhost:7474')
+  end
+
   describe '#insert_nodes' do
 
-    before do
-      @session = Neo4j::Session.open(:server_db, 'http://localhost:7474')
-    end
-
     let(:node_file_data) { '[{
-                                "name":"node_1"
+                                "name":"node_1",
+                                "type":"service"
                               },
                               {
                                 "name":"node_2",
+                                "type":"entity",
                                 "detail_1":"property1",
                                 "property_2":"property2",
                                 "something":"propertyn"
@@ -70,21 +68,26 @@ describe RumourMill do
                               }]'}
 
     it 'inserts all the nodes into the database' do
-      
+
       subject.insert_nodes(node_file_data)
       node_1 = @session.query("MATCH (n:node) WHERE n.name='node_1' RETURN n")
       node_2 = @session.query("MATCH (n:node) WHERE n.name='node_2' RETURN n")
       node_n = @session.query("MATCH (n:node) WHERE n.name='node_n' RETURN n")
-      expect(node_1.to_a.size).to eq(1)
-      expect(node_2.to_a.size).to eq(1)
-      expect(node_n.to_a.size).to eq(1)
+      expect(node_1.first[:n].props[:type]).to eq('service')
+      expect(node_2.first[:n].props[:type]).to eq('entity')
+      expect(node_n.first[:n].props[:type]).to eq('unknown')
 
     end
 
-    after do
-      @session.query('MATCH (n) DELETE n')
-    end
+  end
 
+  describe '#insert_relationships' do
+    
+
+  end
+
+  after do
+    @session.query('MATCH (n) DELETE n')
   end
 
 end

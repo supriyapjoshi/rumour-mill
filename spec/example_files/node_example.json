@@ -1,16 +1,25 @@
 [
   {
-    "name":"node_1"
+    "name":"node-1",
+    "type":"service"
   },
   {
-    "name":"node_2",
-    "detail_1":"property1",
-    "property_2":"property2",
+    "name":"node-2",
+    "type":"entity",
+    "detail-1":"property1",
+    "property-2":"property2",
     "something":"propertyn"
   },
   {
-    "name":"node_n",
-    "detail_1":"property1",
+    "name":"node-3",
+    "detail-1":"property1",
+    "property-2":"property2",
+    "something":"propertyn"
+  },
+  {
+    "name":"node-n",
+    "type":"business-process",
+    "detail-1":"property1",
     "something":"property2",
     "foo":"propertyn"
   }

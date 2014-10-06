@@ -15,6 +15,7 @@ class RumourMill
     @session = Neo4j::Session.open(:server_db, @db_host)
 
     nodes_hash.each do |node|
+      node[:type] = 'unknown' unless node.has_key? 'type' 
       Neo4j::Node.create(node, :node)
     end
 
