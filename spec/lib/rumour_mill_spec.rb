@@ -43,13 +43,7 @@ describe RumourMill do
 
   end
 
-  before do
-    @session = Neo4j::Session.open(:server_db, 'http://localhost:7474')
-  end
-
-  describe '#insert_nodes' do
-
-    let(:node_file_data) { '[{
+  let(:node_file_data) { '[{
                                 "name":"node_1",
                                 "type":"service"
                               },
@@ -67,16 +61,38 @@ describe RumourMill do
                                 "foo":"propertyn"
                               }]'}
 
-    it 'inserts all the nodes into the database' do
+  before do
+    @session = Neo4j::Session.open(:server_db, 'http://localhost:7474')
+    subject.insert_nodes(node_file_data)
+  end
 
-      subject.insert_nodes(node_file_data)
+  describe '#insert_nodes' do
+
+    it 'inserts all the nodes into the database' do
+      
+      nodes = @session.query("MATCH (n:node) RETURN n")
+      expect(nodes.to_a.size).to eq(3)
+    end
+
+    it 'adds an unknown type to the node if it is not specified' do
+      node_n = @session.query("MATCH (n:node) WHERE n.name='node_n' RETURN n")
+      expect(node_n.first[:n].props[:type]).to eq('unknown')
+    end
+
+    it 'inserts the type property when specified' do
+      node_1 = @session.query("MATCH (n:node) WHERE n.name='node_1' RETURN n")
+      node_2 = @session.query("MATCH (n:node) WHERE n.name='node_2' RETURN n")
+      expect(node_1.first[:n].props[:type]).to eq('service')
+      expect(node_2.first[:n].props[:type]).to eq('entity')
+    end
+
+    it 'inserts any additional properties specified as they are' do
       node_1 = @session.query("MATCH (n:node) WHERE n.name='node_1' RETURN n")
       node_2 = @session.query("MATCH (n:node) WHERE n.name='node_2' RETURN n")
       node_n = @session.query("MATCH (n:node) WHERE n.name='node_n' RETURN n")
-      expect(node_1.first[:n].props[:type]).to eq('service')
-      expect(node_2.first[:n].props[:type]).to eq('entity')
-      expect(node_n.first[:n].props[:type]).to eq('unknown')
-
+      expect(node_1.first[:n].props.keys.size).to eq(2)
+      expect(node_2.first[:n].props.keys.size).to eq(5)
+      expect(node_n.first[:n].props.keys.size).to eq(5)
     end
 
   end
