@@ -69,7 +69,6 @@ describe RumourMill do
   describe '#insert_nodes' do
 
     it 'inserts all the nodes into the database' do
-      
       nodes = @session.query("MATCH (n:node) RETURN n")
       expect(nodes.to_a.size).to eq(3)
     end
