@@ -100,34 +100,42 @@ describe RumourMill do
     let(:relationships_data){'[{
                                  "from":"node_1",
                                  "to":"node_2",
-                                 "relationship":"relationship"
+                                 "relationship":"loves"
                                 },
                                 {
                                  "from":"node_1",
                                  "to":"node_n",
-                                 "relationship":"relationship_name",
+                                 "relationship":"friends",
                                  "property-1": "property_1",
                                  "property-n": "property_n"
                                 },
                                 {
                                  "from":"node_2",
                                  "to":"node_n",
-                                 "relationship":"relationship_name",
+                                 "relationship":"consumes",
                                  "property-1": "property_1",
                                  "property-n": "property_n"
                                 }]'}
     before do
-
+      subject.insert_relationships relationships_data
     end
 
-    xit 'inserts all the correct relationship connections' do
+    it 'inserts all the correct relationship connections' do
+      
+      node_1 = @session.query("MATCH (n:node) WHERE n.name='node_1' RETURN n")
+      expect(node_1.first.n.rels[0].rel_type).to eq('loves'.to_sym)
+      expect(node_1.first.n.rels[1].rel_type).to eq('friends'.to_sym)
+
+
+      node_2 = @session.query("MATCH (n:node) WHERE n.name='node_2' RETURN n")
+      expect(node_2.first.n.rels[0].rel_type).to eq('loves'.to_sym)
+      expect(node_2.first.n.rels[1].rel_type).to eq('consumes'.to_sym)
 
     end
 
     xit 'will not insert relationships without relationship property' do
 
     end
-
 
     xit 'will not insert relationships without to property' do
 
@@ -144,7 +152,7 @@ describe RumourMill do
     xit 'will not insert relationships when the from node does not exist' do
 
     end
-    
+
     xit 'attaches any other properties to that relationship that are given' do
 
     end
@@ -155,6 +163,7 @@ describe RumourMill do
   end
 
   after do
+    @session.query('MATCH (n)-[r]-() DELETE n, r')
     @session.query('MATCH (n) DELETE n')
   end
 

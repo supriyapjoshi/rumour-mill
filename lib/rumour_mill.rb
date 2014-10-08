@@ -20,6 +20,17 @@ class RumourMill
     end
   end
 
+  def insert_relationships relationship_json_data
+    relationship_hash = JSON.parse relationship_json_data
+
+    relationship_hash.each do |relationship|
+      n1 = Neo4j::Session.query('MATCH n WHERE n.name = "' + relationship['from'] + '" RETURN n').first.n
+      n2 = Neo4j::Session.query('MATCH n WHERE n.name = "' + relationship['to'] + '" RETURN n').first.n
+      Neo4j::Relationship.create(relationship['relationship'].to_sym, n1, n2)
+    end
+
+  end
+
   private
   def connect_to_db
     @db_host = 'http://localhost:7474'
