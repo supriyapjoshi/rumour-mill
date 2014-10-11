@@ -120,18 +120,54 @@ describe RumourMill do
       subject.insert_relationships relationships_data
     end
 
+    def get_node name
+      @session.query("MATCH (n:node) WHERE n.name='#{name}' RETURN n")
+    end
+
+    def get_relationship_start_node relationship_name
+      @session.query("MATCH (n:node)-[r:#{relationship_name}]-() RETURN startNode(r)")
+    end
+
+    def get_relationship_end_node relationship_name
+      @session.query("MATCH (n:node)-[r:#{relationship_name}]-() RETURN endNode(r)")
+    end
+
     it 'inserts all the correct relationship connections' do
-      
-      node_1 = @session.query("MATCH (n:node) WHERE n.name='node_1' RETURN n")
+      node_1 = get_node 'node_1'
       expect(node_1.first.n.rels[0].rel_type).to eq('loves'.to_sym)
       expect(node_1.first.n.rels[1].rel_type).to eq('friends'.to_sym)
 
-
-      node_2 = @session.query("MATCH (n:node) WHERE n.name='node_2' RETURN n")
+      node_2 = get_node 'node_2'
       expect(node_2.first.n.rels[0].rel_type).to eq('loves'.to_sym)
       expect(node_2.first.n.rels[1].rel_type).to eq('consumes'.to_sym)
 
+      node_n = get_node 'node_n'
+      expect(node_n.first.n.rels[0].rel_type).to eq('friends'.to_sym)
+      expect(node_n.first.n.rels[1].rel_type).to eq('consumes'.to_sym)
+
     end
+
+    it 'inserts the relationships with the correct direction' do
+      relationship_start_node = get_relationship_start_node 'loves'
+      relationship_end_node = get_relationship_end_node 'loves'
+
+      expect(relationship_start_node.first.first.props[:name]).to eq('node_1')
+      expect(relationship_end_node.first.first.props[:name]).to eq('node_2')
+
+      relationship_start_node = get_relationship_start_node 'friends'
+      relationship_end_node = get_relationship_end_node 'friends'
+
+      expect(relationship_start_node.first.first.props[:name]).to eq('node_1')
+      expect(relationship_end_node.first.first.props[:name]).to eq('node_n')
+
+      relationship_start_node = get_relationship_start_node 'consumes'
+      relationship_end_node = get_relationship_end_node 'consumes'
+
+      expect(relationship_start_node.first.first.props[:name]).to eq('node_2')
+      expect(relationship_end_node.first.first.props[:name]).to eq('node_n')
+
+    end
+
 
     xit 'will not insert relationships without relationship property' do
 
