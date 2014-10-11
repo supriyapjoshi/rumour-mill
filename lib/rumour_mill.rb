@@ -24,9 +24,7 @@ class RumourMill
     relationship_hash = JSON.parse relationship_json_data
 
     relationship_hash.each do |relationship|
-      n1 = Neo4j::Session.query('MATCH n WHERE n.name = "' + relationship['from'] + '" RETURN n').first.n
-      n2 = Neo4j::Session.query('MATCH n WHERE n.name = "' + relationship['to'] + '" RETURN n').first.n
-      Neo4j::Relationship.create(relationship['relationship'].to_sym, n1, n2)
+      insert_relationship relationship unless relationship_connection_malformed? relationship
     end
 
   end
@@ -43,6 +41,23 @@ class RumourMill
 
   def add_unknown_property_type node
     node[:type] = 'unknown'
+  end
+
+  def relationship_connection_malformed? relationship
+    ['relationship','to','from'].each do |key|
+      return true unless relationship.has_key? key
+    end
+    false
+  end
+
+  def node_exists? node
+    
+  end
+
+  def insert_relationship relationship
+    n1 = Neo4j::Session.query('MATCH n WHERE n.name = "' + relationship['from'] + '" RETURN n').first.n
+    n2 = Neo4j::Session.query('MATCH n WHERE n.name = "' + relationship['to'] + '" RETURN n').first.n
+    Neo4j::Relationship.create(relationship['relationship'].to_sym, n1, n2)
   end
 
 end

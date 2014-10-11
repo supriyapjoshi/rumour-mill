@@ -44,22 +44,22 @@ describe RumourMill do
   end
 
   let(:node_file_data) { '[{
-                                "name":"node_1",
-                                "type":"service"
-                              },
-                              {
-                                "name":"node_2",
-                                "type":"entity",
-                                "detail_1":"property1",
-                                "property_2":"property2",
-                                "something":"propertyn"
-                              },
-                              {
-                                "name":"node_n",
-                                "detail_1":"property1",
-                                "something":"property2",
-                                "foo":"propertyn"
-                              }]'}
+                              "name":"node_1",
+                              "type":"service"
+                            },
+                            {
+                              "name":"node_2",
+                              "type":"entity",
+                              "detail_1":"property1",
+                              "property_2":"property2",
+                              "something":"propertyn"
+                            },
+                            {
+                              "name":"node_n",
+                              "detail_1":"property1",
+                              "something":"property2",
+                              "foo":"propertyn"
+                            }]'}
 
   before do
     @session = Neo4j::Session.open(:server_db, 'http://localhost:7474')
@@ -115,6 +115,18 @@ describe RumourMill do
                                  "relationship":"consumes",
                                  "property-1": "property_1",
                                  "property-n": "property_n"
+                                },
+                                {
+                                 "from":"node_2",
+                                 "to":"node_1"
+                                },
+                                {
+                                 "from":"node_2",
+                                 "relationship":"hates"
+                                },
+                                {
+                                 "to":"node_2",
+                                 "relationship":"fancys"
                                 }]'}
     before do
       subject.insert_relationships relationships_data
@@ -165,24 +177,33 @@ describe RumourMill do
 
       expect(relationship_start_node.first.first.props[:name]).to eq('node_2')
       expect(relationship_end_node.first.first.props[:name]).to eq('node_n')
+      # bidirectional relationships can be queried ignorring the direction
+      # eg MATCH (node)-[:friends_with]-(node)
+      # just need a relationship with an arbitrary direction
 
     end
 
-
-    xit 'will not insert relationships without relationship property' do
-
+    it 'will not insert relationships without relationship property' do
+      node_2 = get_node 'node_2'
+      expect(node_2.first.n.rels.size).to eq(2)
     end
 
-    xit 'will not insert relationships without to property' do
-
+    it 'will not insert relationships without to property' do
+      node_2 = get_node 'node_2'
+      node_2.first.n.rels.each do |relationship|
+        expect(relationship.rel_type).not_to eq('hates'.to_sym)
+      end
     end
 
-    xit 'will not insert relationships without from property' do
-
+    it 'will not insert relationships without from property' do
+      node_2 = get_node 'node_2'
+      node_2.first.n.rels.each do |relationship|
+        expect(relationship.rel_type).not_to eq('fancys'.to_sym)
+      end
     end
 
-    xit 'will not insert relationships when the to node does not exist' do
-
+    it 'will not insert relationships when the to node does not exist' do
+      pry
     end
 
     xit 'will not insert relationships when the from node does not exist' do
@@ -194,12 +215,11 @@ describe RumourMill do
     end
 
     after do
-
+      @session.query('MATCH (n)-[r]-() DELETE r')
     end
   end
 
   after do
-    @session.query('MATCH (n)-[r]-() DELETE n, r')
     @session.query('MATCH (n) DELETE n')
   end
 
