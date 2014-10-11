@@ -187,7 +187,7 @@ describe RumourMill do
 
       expect(relationship_start_node.first.first.props[:name]).to eq('node_2')
       expect(relationship_end_node.first.first.props[:name]).to eq('node_n')
-      # bidirectional relationships can be queried ignorring the direction
+      # bidirectional relationships can be queried ignoring the direction
       # eg MATCH (node)-[:friends_with]-(node)
       # just need a relationship with an arbitrary direction
 
