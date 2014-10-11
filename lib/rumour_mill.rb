@@ -24,7 +24,7 @@ class RumourMill
     relationship_hash = JSON.parse relationship_json_data
 
     relationship_hash.each do |relationship|
-      insert_relationship relationship unless relationship_connection_malformed? relationship
+      insert_relationship relationship unless nodes_dont_exist_or_relationship_malformed? relationship
     end
 
   end
@@ -50,8 +50,16 @@ class RumourMill
     false
   end
 
-  def node_exists? node
-    
+  def nodes_dont_exist_or_relationship_malformed? relationship
+    node_not_exist?(relationship['from']) || node_not_exist?(relationship['to']) || relationship_connection_malformed?(relationship)
+  end
+
+  def node_exists? node_name
+    @session.query("MATCH (n:node) WHERE n.name='#{node_name}' RETURN n").any?
+  end
+
+  def node_not_exist? node_name
+    !node_exists? node_name
   end
 
   def insert_relationship relationship

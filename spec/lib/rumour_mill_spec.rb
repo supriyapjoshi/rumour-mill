@@ -127,6 +127,16 @@ describe RumourMill do
                                 {
                                  "to":"node_2",
                                  "relationship":"fancys"
+                                },
+                                {
+                                 "from":"node_x",
+                                 "to":"node_2",
+                                 "relationship":"team-mate"
+                                },
+                                {
+                                 "from":"node_2",
+                                 "to":"node_y",
+                                 "relationship":"rivals"
                                 }]'}
     before do
       subject.insert_relationships relationships_data
@@ -203,11 +213,11 @@ describe RumourMill do
     end
 
     it 'will not insert relationships when the to node does not exist' do
-      pry
+      expect(get_node('node_x').any?).to be_falsey
     end
 
-    xit 'will not insert relationships when the from node does not exist' do
-
+    it 'will not insert relationships when the from node does not exist' do
+      expect(get_node('node_y').any?).to be_falsey
     end
 
     xit 'attaches any other properties to that relationship that are given' do
