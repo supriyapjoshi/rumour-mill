@@ -4,3 +4,4 @@ Initial readme.
 
 TODO's
 fix neo4j testing method -> https://github.com/neo4jrb/neo4j/wiki/How-To-Test
+deployment
