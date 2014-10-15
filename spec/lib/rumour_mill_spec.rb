@@ -220,6 +220,10 @@ describe RumourMill do
       expect(get_node('node_y').any?).to be_falsey
     end
 
+    xit 'will not insert relationships if they already exist' do
+
+    end
+
     xit 'attaches any other properties to that relationship that are given' do
 
     end
