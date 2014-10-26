@@ -62,14 +62,7 @@ class RumourMill
   end
 
   def relationship_exists? relationship
-    node = get_node relationship['from']
-    if node != nil
-      node.first.n.rels.each do |rel|
-        if rel.rel_type == relationship['relationship'].to_sym
-          return true
-        end
-      end
-    end
+    get_node(relationship['from']).first.n.rels.each { |relation| return true if relation.rel_type == relationship['relationship'].to_sym }
     false
   end
 
