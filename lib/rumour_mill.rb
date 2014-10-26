@@ -22,7 +22,6 @@ class RumourMill
 
   def insert_relationships relationship_json_data
     relationship_hash = JSON.parse relationship_json_data
-
     relationship_hash.each do |relationship|
       insert_relationship relationship unless nodes_dont_exist_or_relationship_malformed_or_relationship_exists? relationship
     end
@@ -43,9 +42,7 @@ class RumourMill
   end
 
   def relationship_connection_malformed? relationship
-    ['relationship','to','from'].each do |key|
-      return true unless relationship.has_key? key
-    end
+    ['relationship','to','from'].each { |key| return true unless relationship.has_key? key }
     false
   end
 
