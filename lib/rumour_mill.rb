@@ -71,9 +71,18 @@ class RumourMill
   end
 
   def insert_relationship relationship
-    n1 = Neo4j::Session.query('MATCH n WHERE n.name = "' + relationship['from'] + '" RETURN n').first.n
-    n2 = Neo4j::Session.query('MATCH n WHERE n.name = "' + relationship['to'] + '" RETURN n').first.n
-    Neo4j::Relationship.create(relationship['relationship'].to_sym, n1, n2)
+    n1 = get_node(relationship['from']).first.n
+    n2 = get_node(relationship['to']).first.n
+    rel = Neo4j::Relationship.create(relationship['relationship'].to_sym, n1, n2)
+    set_relationship_properties rel, relationship
+  end
+
+  def set_relationship_properties n4j_relationship, relationship_json
+    relationship_json.each { |key,value| n4j_relationship.set_property(key.to_sym,value) unless key_used? key.to_sym }
+  end
+
+  def key_used? key
+    key == :from || key == :to || key == :relationship
   end
 
 end

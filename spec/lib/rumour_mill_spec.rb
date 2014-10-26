@@ -227,17 +227,22 @@ describe RumourMill do
       expect(get_node('node_y').any?).to be_falsey
     end
 
-    xit 'will insert any other properties listed on the relationship' do
-
-    end
-
     it 'will not insert relationships if they already exist' do
       node_1 = get_node 'node_1'
       expect(node_1.first.n.rels.size).not_to eq(3)
     end
 
-    xit 'attaches any other properties to that relationship that are given' do
+    it 'attaches any other properties to that relationship that are given' do
+      node_1 = get_node 'node_1'
 
+      node_1.first.n.rels.each do |relationship|
+        if relationship.rel_type == :friends
+            expect(relationship.props.size).to eq(2)
+        end
+        if relationship.rel_type == :loves
+            expect(relationship.props.size).to eq(0)
+        end
+      end
     end
 
     after do
