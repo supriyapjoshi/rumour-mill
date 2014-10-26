@@ -15,7 +15,7 @@ class RumourMill
 
   def insert_nodes nodes_json_data
     JSON.parse(nodes_json_data).each do |node|
-      add_unknown_property_type node unless contains_type? node 
+      add_unknown_property_type node unless contains_type? node
       Neo4j::Node.create(node, :node)
     end
   end
@@ -24,9 +24,8 @@ class RumourMill
     relationship_hash = JSON.parse relationship_json_data
 
     relationship_hash.each do |relationship|
-      insert_relationship relationship unless nodes_dont_exist_or_relationship_malformed? relationship
+      insert_relationship relationship unless nodes_dont_exist_or_relationship_malformed_or_relationship_exists? relationship
     end
-
   end
 
   private
@@ -50,8 +49,8 @@ class RumourMill
     false
   end
 
-  def nodes_dont_exist_or_relationship_malformed? relationship
-    node_not_exist?(relationship['from']) || node_not_exist?(relationship['to']) || relationship_connection_malformed?(relationship)
+  def nodes_dont_exist_or_relationship_malformed_or_relationship_exists? relationship
+    node_not_exist?(relationship['from']) || node_not_exist?(relationship['to']) || relationship_connection_malformed?(relationship) || relationship_exists?(relationship)
   end
 
   def node_exists? node_name
@@ -60,6 +59,22 @@ class RumourMill
 
   def node_not_exist? node_name
     !node_exists? node_name
+  end
+
+  def relationship_exists? relationship
+    node = get_node relationship['from']
+    if node != nil
+      node.first.n.rels.each do |rel|
+        if rel.rel_type == relationship['relationship'].to_sym
+          return true
+        end
+      end
+    end
+    false
+  end
+
+  def get_node name
+    @session.query("MATCH (n:node) WHERE n.name='#{name}' RETURN n")
   end
 
   def insert_relationship relationship

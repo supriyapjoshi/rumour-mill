@@ -2,10 +2,10 @@ require 'spec_helper'
 require 'fakefs/spec_helpers'
 require 'neo4j'
 
-describe RumourMill do 
-  
+describe RumourMill do
+
   describe '#new_files_to_process?' do
-    
+
     include FakeFS::SpecHelpers::All
 
     def create_test_file path, data
@@ -14,9 +14,9 @@ describe RumourMill do
           data.each { |row| file << row }
       end
     end
-    
+
     context 'when there are new files to process' do
-      
+
       before do
         FakeFS::FileSystem.clear
         create_test_file 'rumours/new/data.json', ['blah']
@@ -29,7 +29,7 @@ describe RumourMill do
     end
 
     context 'when there are no new files to process' do
-      
+
       before do
         FakeFS::FileSystem.clear
         FileUtils.mkdir_p 'rumours/new'
@@ -137,6 +137,13 @@ describe RumourMill do
                                  "from":"node_2",
                                  "to":"node_y",
                                  "relationship":"rivals"
+                                },
+                                {
+
+                                 "from":"node_1",
+                                 "to":"node_2",
+                                 "relationship":"loves",
+                                 "foo":"bar"
                                 }]'}
     before do
       subject.insert_relationships relationships_data
@@ -220,8 +227,13 @@ describe RumourMill do
       expect(get_node('node_y').any?).to be_falsey
     end
 
-    xit 'will not insert relationships if they already exist' do
+    xit 'will insert any other properties listed on the relationship' do
 
+    end
+
+    it 'will not insert relationships if they already exist' do
+      node_1 = get_node 'node_1'
+      expect(node_1.first.n.rels.size).not_to eq(3)
     end
 
     xit 'attaches any other properties to that relationship that are given' do
